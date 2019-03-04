@@ -1,4 +1,4 @@
-var renderer = null, 
+    var renderer = null, 
 scene = null, 
 camera = null,
 root = null,
@@ -6,9 +6,11 @@ group = null,
 bunny = null,
 directionalLight = null;
 
-var tbunny = 0;
+var tbunnyx = 0;
+var tbunnyz = 0;
 
 var duration = 10, // sec
+
 crateAnimator = null,
 waveAnimator = null,
 lightAnimator = null,
@@ -21,6 +23,10 @@ loopAnimation = false;
 
 var objLoader = null;
 
+var currentTime = Date.now();
+
+var direction = 1;
+
 function animate() {
 
     var now = Date.now();
@@ -29,6 +35,15 @@ function animate() {
     var fract = deltat / duration;
     var angle = Math.PI * 2 * fract * 5;
 
+    pos_x =  Math.cos(tbunnyx);
+    pos_z =  Math.sin(tbunnyz);
+
+    group.position.x =6* pos_x;
+    group.position.z = 3 * pos_z;
+
+    tbunnyz += 0.01;
+    tbunnyx += 0.01 / 2;
+    
 }
 
 function run()
@@ -40,6 +55,7 @@ function run()
 
         // Update the animations
         KF.update();
+        animate();
 
         // Update the camera controller
         orbitControls.update();
@@ -166,17 +182,24 @@ function playAnimations()
             interps:
                 [
                     { 
-                        keys:[0, 0.5, 1], 
+                        keys:[0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1], 
                         values:[
                                 { x : 0, y : 0, z : 0},
-                                { x : 0, y : 1, z : 0},
-                                { x : 0, y : 0, z : 0}
+                                { x : 0, y : 0.5, z : 0},
+                                { x : 0, y : 0, z : 0},
+                                { x : 0, y : 0.5, z : 0},
+                                { x : 0, y : 0, z : 0},
+                                { x : 0, y : 0.5, z : 0},
+                                { x : 0, y : 0, z : 0},
+                                { x : 0, y : 0.5, z : 0},
+                                { x : 0, y : 0, z : 0},
+                                { x : 0, y : 0.5, z : 0},
                                 ],
                         target:group.position
                     }
                 ],
             loop: loopAnimation,
-            duration:duration * 100,
+            duration:duration * 1000,
             easing:TWEEN.Easing.Linear.None,
         });
         crateAnimator.start();
