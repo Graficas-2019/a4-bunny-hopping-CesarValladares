@@ -17,6 +17,8 @@ var objLoader = null;
 
 var currentTime = Date.now();
 
+var SHADOW_MAP_WIDTH = 2048, SHADOW_MAP_HEIGHT = 2048;
+
 times=[17];
 
 function run()
@@ -52,7 +54,7 @@ function loadObj()
                     child.castShadow = true;
                     child.receiveShadow = true;
                     child.material.map = texture;
-                    child.material.normalMap = normalMap;
+                    //child.material.normalMap = normalMap;
                 }
             } );
                     
@@ -62,7 +64,7 @@ function loadObj()
             bunny.position.x = 0;
             bunny.rotation.y = Math.PI /2;
             
-            group.add(bunny);
+            group.add(object);
         },
         function ( xhr ) {
 
@@ -96,12 +98,18 @@ function createScene(canvas)
     
     // Create a group to hold all the objects
     root = new THREE.Object3D;
+
+    // Turn on shadows
+    renderer.shadowMap.enabled = true;
+    // Options are THREE.BasicShadowMap, THREE.PCFShadowMap, PCFSoftShadowMap
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     
     // Add a directional light to show off the object
-    directionalLight = new THREE.DirectionalLight( 0xffffff, 1);
+    directionalLight = new THREE.DirectionalLight( 0xffffff, 0.75);
 
     // Create and add all the lights
-    directionalLight.position.set(0, 1, 2);
+    directionalLight.position.set(0, 5, 5);
+    directionalLight.castShadow = true;
     root.add(directionalLight);
 
     ambientLight = new THREE.AmbientLight ( 0x888888 );
@@ -138,19 +146,19 @@ function createScene(canvas)
 
 function calculateTime(){
 
-    aux = 1/16;
+    aux = 1/32;
 
-    for(i = 0; i < 17; i++){
+    for(i = 0; i < 33; i++){
 
         if (i == 0){
             times[i] =0
         }
-        else if (i == 16){
+        else if (i == 32){
             times[i] = 1
         }
         else {
             times[i] = aux;
-            aux += 1/16;
+            aux += 1/32;
         }
 
     }
@@ -170,6 +178,9 @@ function playAnimations()
     group.position.set(0, 0, 0);
     group.rotation.set(0, 0, 0);
 
+    a = 1.732050808;
+    b = 2;
+
     if (animateCrate)
     {
 
@@ -182,23 +193,38 @@ function playAnimations()
                         values:[
 
                             {x : 0 , y : 0 , z : 0},
-                            {x : 1 , y : 1 , z : 1.732050808},
-                            {x : 2 , y : 0 , z : 2},
-                            {x : 3 , y : 1 , z : 1.732050808},
+                            {x : 1/2 , y : 1 , z : a/2},
+                            {x : 1 , y : 0 , z : a},
+                            {x : 3/2 , y : 1 , z : (a+b)/2},
+                            {x : 2 , y : 0 , z : b},
+                            {x : 5/2 , y : 1 , z : (a+b)/2},
+                            {x : 3 , y : 0 , z : a},
+                            {x : 7/2 , y : 1 , z : a/2},
                             {x : 4 , y : 0 , z : 0},
-                            {x : 3 , y : 1 , z : -1.732050808},
-                            {x : 2 , y : 0 , z : -2},
-                            {x : 1 , y : 1 , z : -1.732050808},
+                            {x : 7/2 , y : 1 , z : -a/2},
+                            {x : 3 , y : 0 , z : -a},
+                            {x : 5/2 , y : 1 , z : -(a+b)/2},
+                            {x : 2 , y : 0 , z : -b},
+                            {x : 3/2 , y : 1 , z : -(a+b)/2},
+                            {x : 1 , y : 0 , z : -a},
+                            {x : 1/2 , y : 1 , z : -a/2},
                             {x : 0 , y : 0 , z : 0},
-                            {x : -1 , y : 1 , z : 1.732050808},
-                            {x : -2 , y : 0 , z : 2},
-                            {x : -3 , y : 1 , z : 1.732050808},
+                            {x : -1/2 , y : 1 , z : a/2},
+                            {x : -1 , y : 0 , z : a},
+                            {x : -3/2 , y : 1 , z : (a+b)/2},
+                            {x : -2 , y : 0 , z : b},
+                            {x : -5/2 , y : 1 , z : (a+b)/2},
+                            {x : -3 , y : 0 , z : a},
+                            {x : -7/2 , y : 1 , z : a/2},
                             {x : -4 , y : 0 , z : 0},
-                            {x : -3 , y : 1 , z : -1.732050808},
-                            {x : -2 , y : 0 , z : -2},
-                            {x : -1 , y : 1 , z : -1.732050808},
+                            {x : -7/2 , y : 1 , z : -a/2},
+                            {x : -3 , y : 0 , z : -a},
+                            {x : -5/2 , y : 1 , z : -(a+b)/2},
+                            {x : -2 , y : 0 , z : -b},
+                            {x : -3/2 , y : 1 , z : -(a+b)/2},
+                            {x : -1 , y : 0 , z : -a},
+                            {x : -1/2 , y : 1 , z : -a/2},
                             {x : 0 , y : 0 , z : 0},                      
-
                         ],
                         target:group.position
                     },
