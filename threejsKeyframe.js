@@ -86,7 +86,7 @@ function createScene(canvas)
     renderer = new THREE.WebGLRenderer( { canvas: canvas, antialias: true } );
 
     // Set the viewport size
-    renderer.setSize(canvas.width, canvas.height);
+    renderer.setSize(window.innerWidth, window.innerHeight);
 
     // Create a new Three.js scene
     scene = new THREE.Scene();
