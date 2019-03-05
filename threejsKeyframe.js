@@ -10,6 +10,7 @@ directionalLight = null;
 var duration = 10, // sec
 
 crateAnimator = null,
+animateCrate = true,
 lightAnimator = null,
 loopAnimation = true;
 var objLoader = null;
