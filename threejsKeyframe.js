@@ -1,4 +1,4 @@
-    var renderer = null, 
+var renderer = null, 
 scene = null, 
 camera = null,
 root = null,
@@ -6,45 +6,17 @@ group = null,
 bunny = null,
 directionalLight = null;
 
-var tbunnyx = 0;
-var tbunnyz = 0;
 
 var duration = 10, // sec
 
 crateAnimator = null,
-waveAnimator = null,
 lightAnimator = null,
-waterAnimator = null,
-animateCrate = true,
-animateWaves = true,
-animateLight = true,
-animateWater = true,
-loopAnimation = false;
-
+loopAnimation = true;
 var objLoader = null;
 
 var currentTime = Date.now();
 
-var direction = 1;
-
-function animate() {
-
-    var now = Date.now();
-    var deltat = now - currentTime;
-    currentTime = now;
-    var fract = deltat / duration;
-    var angle = Math.PI * 2 * fract * 5;
-
-    pos_x =  Math.cos(tbunnyx);
-    pos_z =  Math.sin(tbunnyz);
-
-    group.position.x =6* pos_x;
-    group.position.z = 3 * pos_z;
-
-    tbunnyz += 0.01;
-    tbunnyx += 0.01 / 2;
-    
-}
+times=[17];
 
 function run()
 {
@@ -55,7 +27,6 @@ function run()
 
         // Update the animations
         KF.update();
-        animate();
 
         // Update the camera controller
         orbitControls.update();
@@ -164,9 +135,33 @@ function createScene(canvas)
 
 }
 
-function playAnimations()
+function calculateTime(){
 
+    aux = 1/16;
+
+    for(i = 0; i < 17; i++){
+
+        if (i == 0){
+            times[i] =0
+        }
+        else if (i == 16){
+            times[i] = 1
+        }
+        else {
+            times[i] = aux;
+            aux += 1/16;
+        }
+
+    }
+
+    console.log(times)
+    
+}
+
+function playAnimations()
 {
+    calculateTime()
+
     // position animation
     if (crateAnimator)
         crateAnimator.stop();
@@ -182,22 +177,48 @@ function playAnimations()
             interps:
                 [
                     { 
-                        keys:[0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1], 
+                        keys:times, 
                         values:[
-                                { x : 0, y : 0, z : 0},
-                                { x : 0, y : 0.5, z : 0},
-                                { x : 0, y : 0, z : 0},
-                                { x : 0, y : 0.5, z : 0},
-                                { x : 0, y : 0, z : 0},
-                                { x : 0, y : 0.5, z : 0},
-                                { x : 0, y : 0, z : 0},
-                                { x : 0, y : 0.5, z : 0},
-                                { x : 0, y : 0, z : 0},
-                                { x : 0, y : 0.5, z : 0},
-                                ],
+
+                            {x : 0 , y : 0 , z : 0},
+                            {x : 1 , y : 1 , z : 1.732050808},
+                            {x : 2 , y : 0 , z : 2},
+                            {x : 3 , y : 1 , z : 1.732050808},
+                            {x : 4 , y : 0 , z : 0},
+                            {x : 3 , y : 1 , z : -1.732050808},
+                            {x : 2 , y : 0 , z : -2},
+                            {x : 1 , y : 1 , z : -1.732050808},
+                            {x : 0 , y : 0 , z : 0},
+                            {x : -1 , y : 1 , z : 1.732050808},
+                            {x : -2 , y : 0 , z : 2},
+                            {x : -3 , y : 1 , z : 1.732050808},
+                            {x : -4 , y : 0 , z : 0},
+                            {x : -3 , y : 1 , z : -1.732050808},
+                            {x : -2 , y : 0 , z : -2},
+                            {x : -1 , y : 1 , z : -1.732050808},
+                            {x : 0 , y : 0 , z : 0},                      
+
+                        ],
                         target:group.position
+                    },
+                    { 
+                        keys:[0, 0.125, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875, 1], 
+                        values:[
+
+                            {y : 0 },
+                            {y : Math.PI/2 },
+                            {y : 2*Math.PI/2 },
+                            {y : 3*Math.PI/2 },
+                            {y : 4*Math.PI/2 },
+                            {y : 3*Math.PI/2 },                
+                            {y : 2*Math.PI/2 },
+                            {y : 1*Math.PI/2 },
+                            {y : 0*Math.PI/2 },
+                        ],
+                        target:group.rotation
                     }
                 ],
+
             loop: loopAnimation,
             duration:duration * 1000,
             easing:TWEEN.Easing.Linear.None,
@@ -206,91 +227,4 @@ function playAnimations()
         
     }
     
-    // // rotation animation
-    // if (waveAnimator)
-    //     waveAnimator.stop();
-
-    // waves.rotation.set(-Math.PI / 2, 0, 0);
-
-    // if (animateWaves)
-    // {
-    //     waveAnimator = new KF.KeyFrameAnimator;
-    //     waveAnimator.init({ 
-    //         interps:
-    //             [
-    //                 { 
-    //                     keys:[0, .5, 1], 
-    //                     values:[
-    //                             { x : -Math.PI / 2, y : 0 },
-    //                             { x : -Math.PI / 2.2, y : 0 },
-    //                             { x : -Math.PI / 2, y: 0 },
-    //                             ],
-    //                     target:waves.rotation
-    //                 },
-    //             ],
-    //         loop: loopAnimation,
-    //         duration:duration * 1000,
-    //     });
-    //     waveAnimator.start();
-    // }
-    
-    // // color animation
-    // if (lightAnimator)
-    //     lightAnimator.stop();
-
-    // directionalLight.color.setRGB(1, 1, 1);
-
-    // if (animateLight)
-    // {
-    //     lightAnimator = new KF.KeyFrameAnimator;
-    //     lightAnimator.init({ 
-    //         interps:
-    //             [
-    //                 { 
-    //                     keys:[0, .4, .6, .7, .8, 1], 
-    //                     values:[
-    //                             { r: 1, g : 1, b: 1 },
-    //                             { r: 0.66, g : 0.66, b: 0.66 },
-    //                             { r: .333, g : .333, b: .333 },
-    //                             { r: 0, g : 0, b: 0 },
-    //                             { r: .667, g : .667, b: .667 },
-    //                             { r: 1, g : 1, b: 1 },
-    //                             ],
-    //                     target:directionalLight.color
-    //                 },
-    //             ],
-    //         loop: loopAnimation,
-    //         duration:duration * 1000,
-    //     });
-    //     lightAnimator.start();
-    // }
-                
-    // // opacity animation
-    // if (waterAnimator)
-    //     waterAnimator.stop();
-    
-    // cube.material.opacity = 1;	
-
-    // if (animateWater)
-    // {
-    //     waterAnimator = new KF.KeyFrameAnimator;
-    //     waterAnimator.init({ 
-    //         interps:
-    //             [
-    //                 { 
-    //                     keys:[0, 1], 
-    //                     values:[
-    //                             { x : 0, y : 0 },
-    //                             { x : 1, y : 0 },
-    //                             ],
-    //                     target:waves.material.map.offset
-    //                 },
-    //             ],
-    //         loop: loopAnimation,
-    //         duration:duration * 1000,
-    //         easing:TWEEN.Easing.Sinusoidal.In,
-    //     });
-    //     waterAnimator.start();
-    // }
-
 }
